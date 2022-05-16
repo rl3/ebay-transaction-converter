@@ -2,7 +2,19 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <title>ebay Transaction Report Konverter</title>
         <style>
+            body {
+                font-family: sans-serif;
+            }
+            .description {
+                max-width: 60em;
+                margin: auto;
+            }
+            #content .logo {
+                margin: 2em;
+                text-align: right;
+            }
             #overlay {
                 display: none;
                 position: absolute;
@@ -18,7 +30,6 @@
                 color: white;
                 font-size: 24pt;
                 font-weight: bold;
-                font-family: sans-serif;
                 left: 50%;
                 top: 50%;
                 transform: translate(-50%, -110%);
@@ -33,11 +44,34 @@
                 width: 150px;
                 height: 150px;
             }
+            .center {
+                text-align: center;
+            }
         </style>
     </head>
     <body>
         <div id="content">
-            <input type="file" id="file-selector" multiple="true" />
+            <div class="logo"><img src="logo.svg" /></div>
+            <div class="description">
+                <h1>ebay Transaction Report Konverter</h1>
+                <p>
+                    Hier können Sie die von ebay heruntergeladenen Transaction
+                    Reports im CSV-Format so umwandeln lassen, dass für alle
+                    Umsätze eine weitere Zeile mit den Gebühren eingefügt
+                    werden.
+                </p>
+                <p>
+                    Die konvertierten Dateien werden wieder zum Speichern
+                    angeboten.
+                </p>
+                <p>
+                    Die Daten werden ausschließlich auf Ihrem Computer
+                    verarbeitet und ins Internet gesendet.
+                </p>
+                <p class="center">
+                    <input type="file" id="file-selector" multiple="true" />
+                </p>
+            </div>
         </div>
         <div id="overlay">
             <div class="filename"></div>
