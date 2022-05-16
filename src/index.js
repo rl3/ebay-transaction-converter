@@ -17,7 +17,6 @@ const showMessage = (message, className) => {
     box.textContent = message;
     document.getElementById("messages").appendChild(box);
     setTimeout(() => box.remove(), messageTimeout);
-    console.log(box);
 };
 
 const error = (message) => showMessage(message, "error");
