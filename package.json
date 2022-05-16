@@ -1,10 +1,12 @@
 {
   "devDependencies": {
     "browserify": "^17.0.0",
+    "inliner": "^1.13.1",
     "watchify": "^4.0.0"
   },
   "scripts": {
-    "build": "watchify src/index.js -o dist/bundle.js"
+    "build": "watchify src/index.js -o dist/bundle.js",
+    "deploy": "browserify src/index.js -o dist/bundle.js; inliner ./index.html > dist/index.html"
   },
   "dependencies": {
     "fast-csv": "^4.3.6"

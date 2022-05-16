@@ -21,6 +21,7 @@ const downloadTable = (table, filename) =>
         element.click();
         element.remove();
     });
+
 const reformatTable = (table) => {
     const outTable = [];
     const fieldsMap = new Map();
@@ -55,6 +56,7 @@ const reformatTable = (table) => {
     }
     return outTable;
 };
+
 const getParsecsvdata = (data) =>
     new Promise((resolve) => {
         const table = [];
@@ -72,7 +74,7 @@ const setOverlay = (filename) => {
     overlay.querySelector(".filename").textContent = filename;
 };
 
-const getCsv = (input) => {
+const initCsvConverter = (input) => {
     input.addEventListener("change", function () {
         if (this.files) {
             let promise = Promise.resolve();
@@ -94,9 +96,7 @@ const getCsv = (input) => {
     });
 };
 
-const render = () => {
+window.addEventListener("load", () => {
     const input = document.getElementById("file-selector");
-    getCsv(input);
-};
-
-render();
+    initCsvConverter(input);
+});
