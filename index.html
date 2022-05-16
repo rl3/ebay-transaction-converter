@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            #overlay {
+                display: none;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                opacity: 70%;
+                background-color: black;
+            }
+            #overlay .filename {
+                position: absolute;
+                color: white;
+                font-size: 24pt;
+                font-weight: bold;
+                font-family: sans-serif;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -110%);
+            }
+            #overlay .loading {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, 0);
+            }
+            #overlay .loading img {
+                width: 150px;
+                height: 150px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <input type="file" id="file-selector" multiple="true" />
+        </div>
+        <div id="overlay">
+            <div class="filename"></div>
+            <div class="loading"><img src="loading.svg" /></div>
+        </div>
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>

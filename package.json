@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "browserify": "^17.0.0",
+    "watchify": "^4.0.0"
+  },
+  "scripts": {
+    "build": "watchify src/index.js -o dist/bundle.js"
+  },
+  "dependencies": {
+    "fast-csv": "^4.3.6"
+  }
+}
