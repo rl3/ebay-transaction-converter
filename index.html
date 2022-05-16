@@ -47,6 +47,24 @@
             .center {
                 text-align: center;
             }
+            #messages {
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+            #messages div {
+                padding: 0.5em;
+                margin: 0.2em 1em;
+                border: 1px solid rgba(0, 0, 0, 50%);
+                text-align: center;
+            }
+            #messages .error {
+                background-color: rgba(255, 0, 0, 50%);
+            }
+            #messages .info {
+                background-color: rgba(0, 255, 0, 50%);
+            }
         </style>
     </head>
     <body>
@@ -73,6 +91,7 @@
                 </p>
             </div>
         </div>
+        <div id="messages"></div>
         <div id="overlay">
             <div class="filename"></div>
             <div class="loading"><img src="loading.svg" /></div>

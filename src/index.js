@@ -6,8 +6,22 @@ const reFeeField = /Gebühr|Verkaufsprovision/;
 
 const feeTypeName = "Andere Gebühr";
 
+const messageTimeout = 5000;
+
 const parseString = require("fast-csv").parseString;
 const writeToString = require("fast-csv").writeToString;
+
+const showMessage = (message, className) => {
+    const box = document.createElement("div");
+    box.className = className;
+    box.textContent = message;
+    document.getElementById("messages").appendChild(box);
+    setTimeout(() => box.remove(), messageTimeout);
+    console.log(box);
+};
+
+const error = (message) => showMessage(message, "error");
+const info = (message) => showMessage(message, "info");
 
 const downloadTable = (table, filename) =>
     writeToString(table, { delimiter: ";" }).then((data) => {
@@ -89,7 +103,9 @@ const initCsvConverter = (input) => {
                                     downloadTable(outTable, file.name)
                                 )
                         )
-                    );
+                    )
+                    .then(() => info(file.name + " erfolgreich konvertiert."))
+                    .catch((err) => error(err));
             }
             promise.then(() => setOverlay());
         }
