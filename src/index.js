@@ -45,7 +45,10 @@ const reformatTable = (table) => {
     for (const row of table) {
         outTable.push(row);
         if (!fieldsMap.size) {
-            if (row.length > 5) {
+            if (
+                row.filter((col) => col).length > 5 &&
+                !String(row[0]).startsWith("--")
+            ) {
                 row.forEach((col, i) => {
                     fieldsMap.set(i, col);
                     if (reTypeField.test(col)) typeField = i;
@@ -75,7 +78,7 @@ const getParsecsvdata = (data) =>
     new Promise((resolve) => {
         const table = [];
         parseString(data, {
-            delimiter: ";",
+            delimiter: /\t/.test(data) ? "\t" : ";",
         })
             .on("data", (row) => table.push(row))
             .on("end", (rowCount) => resolve(table));
