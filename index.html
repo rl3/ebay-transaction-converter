@@ -70,7 +70,7 @@
     <body>
         <div id="content">
             <div class="logo"><img src="logo.svg" /></div>
-            <div class="description">
+            <div class="description" lang="de">
                 <h1>ebay Transaction Report Konverter</h1>
                 <p>
                     Hier können Sie die von ebay heruntergeladenen Transaction
@@ -79,19 +79,33 @@
                     werden.
                 </p>
                 <p>
+                    Alle Spalten in deren Titel <q>Gebühr</q> oder
+                    <q>Verkaufsprovision</q> vorkommen, werden als Summe in der
+                    folgenden Zeile in der Spalte mit
+                    <q>Transaktionsbetrag</q> zusammengefasst. Als
+                    <q>Typ</q> wird hier <q>Andere Gebühr</q>
+                    angegeben.
+                </p>
+                <p>
+                    Bitte speichern Sie die CSV-Datei mit Semikolon oder
+                    Tabulator als Trenner! Andere Formate werden nicht
+                    unterstützt.
+                </p>
+                <p>
                     Die konvertierten Dateien werden wieder zum Speichern
-                    angeboten.
+                    angeboten oder direkt in Ihrem Download-Ordner abgelegt.
                 </p>
                 <p>
                     Die Daten werden ausschließlich auf Ihrem Computer
-                    verarbeitet und ins Internet gesendet.
+                    verarbeitet und nicht ins Internet gesendet.
                 </p>
                 <p class="center">
                     <input type="file" id="file-selector" multiple="true" />
                 </p>
             </div>
         </div>
-        <div id="messages"></div>
+  </div>
+  <div id="messages"></div>
         <div id="overlay">
             <div class="filename"></div>
             <div class="loading"><img src="loading.svg" /></div>
