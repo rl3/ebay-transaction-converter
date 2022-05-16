@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "watchify src/index.js -o dist/bundle.js",
-    "deploy": "browserify src/index.js | uglifyjs > dist/bundle.js; inliner ./index.html > dist/index.html"
+    "deploy": "browserify src/index.js | uglifyjs --compress --mangle > dist/bundle.js; inliner ./index.html > dist/index.html"
   },
   "dependencies": {
     "fast-csv": "^4.3.6"

@@ -115,6 +115,5 @@ const initCsvConverter = (input) => {
 };
 
 window.addEventListener("load", () => {
-    const input = document.getElementById("file-selector");
-    initCsvConverter(input);
+    initCsvConverter(document.getElementById("file-selector"));
 });
