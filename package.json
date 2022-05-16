@@ -1,11 +1,5 @@
 {
   "devDependencies": {
-    "@babel/cli": "^7.17.10",
-    "@babel/core": "^7.17.10",
-    "@babel/plugin-transform-property-mutators": "^7.16.7",
-    "@babel/plugin-transform-runtime": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
-    "babelify": "^10.0.0",
     "browserify": "^17.0.0",
     "inliner": "^1.13.1",
     "uglify": "^0.1.5",
@@ -14,18 +8,9 @@
   },
   "scripts": {
     "build": "watchify src/index.js -o dist/bundle.js",
-    "deploy": "browserify src/index.js -t [ babelify ] | uglifyjs > dist/bundle.js; inliner ./index.html > dist/index.html"
+    "deploy": "browserify src/index.js | uglifyjs > dist/bundle.js; inliner ./index.html > dist/index.html"
   },
   "dependencies": {
     "fast-csv": "^4.3.6"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime",
-      "@babel/plugin-transform-property-mutators"
-    ]
   }
 }
