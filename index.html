@@ -14,6 +14,19 @@
             #content .logo {
                 margin: 2em;
                 text-align: right;
+                vertical-align: middle;
+                font-size: smaller;
+            }
+            #content .logo img {
+                vertical-align: middle;
+            }
+            #content .logo .rl3-logo {
+                display: inline-block;
+                vertical-align: middle;
+                overflow-x: hidden;
+            }
+            #content .logo .rl3-logo img {
+                margin: -8px 0 0 -17px;
             }
             #overlay {
                 display: none;
@@ -82,14 +95,18 @@
     </head>
     <body>
         <div id="content">
-            <div class="logo"><img src="logo.svg" /></div>
+            <div class="logo">
+              <a href="https://steuerberater-nedtwig.de/" target="_blank"><img src="logo2.jpg" /></a>
+              powered by
+              <a href="https://runlevel3.de/" target="_blank" class="rl3-logo"><img src="logo.svg" /></a>
+            </div>
             <div class="description" lang="de">
                 <h1>ebay Transaction Report Konverter</h1>
                 <p>
-                    Hier können Sie die von ebay heruntergeladenen Transaction
-                    Reports im CSV-Format so umwandeln lassen, dass für alle
+                    Hier können Sie die von ebay heruntergeladenen <q>Transaction
+                    Reports</q> im CSV-Format so umwandeln lassen, dass für alle
                     Umsätze eine weitere Zeile mit den Gebühren eingefügt
-                    werden.
+                    wird.
                 </p>
                 <p>
                     Alle Spalten in deren Titel <q>Gebühr</q> oder
