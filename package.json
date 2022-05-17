@@ -11,6 +11,7 @@
     "deploy": "browserify src/index.js | uglifyjs --compress --mangle > dist/bundle.js; inliner ./index.html > dist/index.html"
   },
   "dependencies": {
-    "fast-csv": "^4.3.6"
+    "fast-csv": "^4.3.6",
+    "jschardet": "^3.0.0"
   }
 }

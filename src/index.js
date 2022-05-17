@@ -10,6 +10,7 @@ const messageTimeout = 5000;
 
 const parseString = require("fast-csv").parseString;
 const writeToString = require("fast-csv").writeToString;
+const jschardet = require("jschardet");
 
 const showMessage = (message, className) => {
     const box = document.createElement("div");
@@ -26,9 +27,13 @@ const error = (message) => {
 const info = (message) => showMessage(message, "info");
 
 const downloadTable = (table, filename) =>
-    writeToString(table, { delimiter: ";" }).then((data) => {
+    writeToString(table, {
+        delimiter: ";",
+        writeBOM: true,
+        quoteColumns: true,
+    }).then((data) => {
         // add Windows BOM
-        data = "\ufeff" + data.replace(/^\ufeff/, "");
+        // data = "\ufeff" + data.replace(/^\ufeff/, "");
         const element = document.createElement("a");
         element.setAttribute(
             "href",
@@ -95,17 +100,30 @@ const setOverlay = (filename) => {
     overlay.querySelector(".filename").textContent = filename;
 };
 
+const convertFile = (file, encoding) =>
+    new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const content = e.target.result;
+            console.log(encoding, content);
+            const decoder = new TextDecoder(encoding);
+            const decoded = decoder.decode(content);
+            console.log(decoded.substring(0, 100));
+            resolve(decoded);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+
 const readFile = (file) =>
     new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function (e) {
             const content = e.target.result;
-            const encoder = new TextEncoder();
-            const decoder = new TextDecoder();
-            resolve(decoder.decode(encoder.encode(content)));
+            const encoding = jschardet.detect(content);
+            resolve(encoding.encoding);
         };
         reader.readAsBinaryString(file);
-    });
+    }).then((encoding) => convertFile(file, encoding));
 
 const initCsvConverter = (input) => {
     input.addEventListener("change", function () {
