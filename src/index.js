@@ -100,15 +100,13 @@ const setOverlay = (filename) => {
     overlay.querySelector(".filename").textContent = filename;
 };
 
-const convertFile = (file, encoding) =>
+const decodeFile = (file, encoding) =>
     new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = function (e) {
             const content = e.target.result;
-            console.log(encoding, content);
             const decoder = new TextDecoder(encoding);
             const decoded = decoder.decode(content);
-            console.log(decoded.substring(0, 100));
             resolve(decoded);
         };
         reader.readAsArrayBuffer(file);
@@ -123,7 +121,7 @@ const readFile = (file) =>
             resolve(encoding.encoding);
         };
         reader.readAsBinaryString(file);
-    }).then((encoding) => convertFile(file, encoding));
+    }).then((encoding) => decodeFile(file, encoding));
 
 const initCsvConverter = (input) => {
     input.addEventListener("change", function () {
