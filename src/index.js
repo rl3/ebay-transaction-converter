@@ -19,7 +19,10 @@ const showMessage = (message, className) => {
     setTimeout(() => box.remove(), messageTimeout);
 };
 
-const error = (message) => showMessage(message, "error");
+const error = (message) => {
+    showMessage(message, "error");
+    console.error(message);
+};
 const info = (message) => showMessage(message, "info");
 
 const downloadTable = (table, filename) =>
@@ -90,6 +93,18 @@ const setOverlay = (filename) => {
     overlay.querySelector(".filename").textContent = filename;
 };
 
+const readFile = (file) =>
+    new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const content = e.target.result;
+            const encoder = new TextEncoder();
+            const decoder = new TextDecoder();
+            resolve(decoder.decode(encoder.encode(content)));
+        };
+        reader.readAsBinaryString(file);
+    });
+
 const initCsvConverter = (input) => {
     input.addEventListener("change", function () {
         if (this.files) {
@@ -97,15 +112,10 @@ const initCsvConverter = (input) => {
             for (const file of this.files) {
                 promise = promise
                     .then(() => setOverlay(file.name))
-                    .then(() =>
-                        file.text().then((data) =>
-                            getParsecsvdata(data)
-                                .then((table) => reformatTable(table))
-                                .then((outTable) =>
-                                    downloadTable(outTable, file.name)
-                                )
-                        )
-                    )
+                    .then(() => readFile(file))
+                    .then((data) => getParsecsvdata(data))
+                    .then((table) => reformatTable(table))
+                    .then((outTable) => downloadTable(outTable, file.name))
                     .then(() => info(file.name + " erfolgreich konvertiert."))
                     .catch((err) => error(err));
             }
