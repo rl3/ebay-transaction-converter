@@ -27,10 +27,12 @@ const info = (message) => showMessage(message, "info");
 
 const downloadTable = (table, filename) =>
     writeToString(table, { delimiter: ";" }).then((data) => {
+        // add Windows BOM
+        data = "\ufeff" + data.replace(/^\ufeff/, "");
         const element = document.createElement("a");
         element.setAttribute(
             "href",
-            "data:text/csv;charset=utf-8, " + encodeURIComponent(data)
+            "data:text/csv;charset=utf-8," + encodeURIComponent(data)
         );
         element.setAttribute("download", filename);
         document.body.appendChild(element);
