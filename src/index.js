@@ -4,7 +4,7 @@ const reTypeField = /Typ/;
 const reBruttoField = /Transaktionsbetrag/;
 const reFeeField = /Gebühr|Verkaufsprovision/;
 
-const feeTypeName = "Andere Gebühr";
+const defaultFeeTypeName = "Andere Gebühr";
 
 const messageTimeout = 5000;
 
@@ -45,43 +45,211 @@ const downloadTable = (table, filename) =>
         element.remove();
     });
 
-const reformatTable = (table) => {
-    const outTable = [];
-    const fieldsMap = new Map();
-    let typeField = 0;
-    let bruttoField = 0;
-    let feeFields = [];
+const reformatTable = (options) => {
+    const table = options.table;
+    const outTable = options.skipRows ? table.splice(0, options.skipRows) : [];
     for (const row of table) {
         outTable.push(row);
-        if (!fieldsMap.size) {
-            if (
-                row.filter((col) => col).length > 5 &&
-                !String(row[0]).startsWith("--")
-            ) {
-                row.forEach((col, i) => {
-                    fieldsMap.set(i, col);
-                    if (reTypeField.test(col)) typeField = i;
-                    if (reBruttoField.test(col)) bruttoField = i;
-                    if (reFeeField.test(col)) feeFields.push(i);
-                });
-            }
-            continue;
-        }
-        const feeSum = feeFields.reduce(
+        const feeSum = options.feeFields.reduce(
             (fee, index) =>
                 fee + (parseFloat(row[index].replace(/\,/, ".")) || 0),
             0
         );
         if (feeSum) {
             const newRow = [...row];
-            newRow[typeField] = feeTypeName;
-            newRow[bruttoField] = String(feeSum).replace(/\./, ",");
-            feeFields.forEach((index) => (newRow[index] = "--"));
+            newRow[options.typeField] = options.feeTypeName;
+            newRow[options.bruttoField] = String(feeSum).replace(/\./, ",");
+            options.feeFields.forEach((index) => (newRow[index] = "--"));
             outTable.push(newRow);
         }
     }
     return outTable;
 };
+
+const showOptionsDialog = (defaultOptions, resolve, reject) => {
+    const options = { ...defaultOptions };
+    const table = options.table;
+
+    const setFields = () => {
+        const availableFields = table[options.skipRows] || [];
+        inputFeeFields.innerHTML =
+            inputBruttoField.innerHTML =
+            inputTypeField.innerHTML =
+                "";
+        const feeFields = new Set(options.feeFields);
+        availableFields.forEach((name, i) => {
+            {
+                const option = document.createElement("option");
+                option.innerText = name;
+                option.value = i;
+                if (feeFields.has(i)) option.selected = true;
+                inputFeeFields.appendChild(option);
+            }
+            {
+                const option = document.createElement("option");
+                option.innerText = name;
+                option.value = i;
+                if (options.bruttoField === i) option.selected = true;
+                inputBruttoField.appendChild(option);
+            }
+            {
+                const option = document.createElement("option");
+                option.innerText = name;
+                option.value = i;
+                if (options.typeField === i) option.selected = true;
+                inputTypeField.appendChild(option);
+            }
+        });
+        inputFeeFields.size = Math.min(availableFields.length, 10);
+    };
+
+    const outerDiv = document.createElement("div");
+    outerDiv.className = "options-input";
+    const div = document.createElement("div");
+    div.className = "inner-options-input";
+    outerDiv.appendChild(div);
+
+    // title
+    {
+        const title = document.createElement("h1");
+        title.innerText = options.fileName;
+        div.appendChild(title);
+    }
+
+    const _table = document.createElement("table");
+    div.appendChild(_table);
+    const addRow = (description, field) => {
+        const row = document.createElement("tr");
+        {
+            const col = document.createElement("td");
+            col.className = "description";
+            col.appendChild(document.createTextNode(description));
+            row.appendChild(col);
+        }
+        {
+            const col = document.createElement("td");
+            col.className = "field";
+            col.appendChild(field);
+            row.appendChild(col);
+        }
+        _table.appendChild(row);
+    };
+
+    // skipRows
+    const inputSkip = document.createElement("input");
+    inputSkip.type = "number";
+    inputSkip.className = "spin";
+    inputSkip.value = options.skipRows;
+    inputSkip.min = 0;
+    inputSkip.max = table.length;
+    inputSkip.addEventListener("change", () => {
+        options.skipRows = inputSkip.value | 0;
+        setFields();
+    });
+    addRow("Zu überspringende Zeilen:", inputSkip);
+
+    // fee fields
+    const inputFeeFields = document.createElement("select");
+    inputFeeFields.multiple = true;
+    inputFeeFields.addEventListener("change", () => {
+        options.feeFields = Array.from(inputFeeFields.selectedOptions).map(
+            (option) => option.value
+        );
+    });
+    addRow("Gebührenfelder:", inputFeeFields);
+
+    // brutto field
+    const inputBruttoField = document.createElement("select");
+    inputBruttoField.addEventListener("change", () => {
+        options.bruttoField = (
+            inputBruttoField.options[inputBruttoField.selectedIndex] || {}
+        ).value;
+    });
+    addRow("Brutto-Feld:", inputBruttoField);
+
+    // type field
+    const inputTypeField = document.createElement("select");
+    inputTypeField.addEventListener("change", () => {
+        options.typeField = (
+            inputTypeField.options[inputTypeField.selectedIndex] || {}
+        ).value;
+    });
+    addRow("Buchungstyp-Feld:", inputTypeField);
+
+    setFields();
+
+    const inputFeeTypeName = document.createElement("input");
+    inputFeeTypeName.type = "text";
+    inputFeeTypeName.value = options.feeTypeName;
+    inputFeeTypeName.addEventListener("change", () => {
+        options.feeTypeName = inputFeeTypeName.value;
+    });
+    addRow("Buchungstyp-Text für Gebühren:", inputFeeTypeName);
+
+    // Buttons
+    {
+        const subDiv = document.createElement("div");
+        subDiv.className = "right";
+        {
+            const button = document.createElement("button");
+            button.innerText = "Konvertieren";
+            button.addEventListener("click", () => {
+                outerDiv.remove();
+                resolve(options);
+            });
+            subDiv.appendChild(button);
+        }
+        {
+            const button = document.createElement("button");
+            button.innerText = "Abbrechen";
+            button.addEventListener("click", () => {
+                outerDiv.remove();
+                reject("Abbruch");
+            });
+            subDiv.appendChild(button);
+        }
+        {
+            const button = document.createElement("button");
+            button.innerText = "Zurücksetzen";
+            button.addEventListener("click", () => {
+                outerDiv.remove();
+                showOptionsDialog(defaultOptions, resolve, reject);
+            });
+            subDiv.appendChild(button);
+        }
+        div.appendChild(subDiv);
+    }
+    document.body.appendChild(outerDiv);
+};
+
+const getOptions = (table, fileName) =>
+    new Promise((resolve, reject) => {
+        const options = {
+            table,
+            fileName,
+            skipRows: 0,
+            typeField: undefined,
+            bruttoField: undefined,
+            feeFields: [],
+            feeTypeName: defaultFeeTypeName,
+        };
+        for (const row of table) {
+            if (
+                row.filter((col) => col).length <= 5 ||
+                String(row[0]).startsWith("--")
+            ) {
+                options.skipRows++;
+                continue;
+            }
+            row.forEach((col, i) => {
+                if (reTypeField.test(col)) options.typeField = i;
+                if (reBruttoField.test(col)) options.bruttoField = i;
+                if (reFeeField.test(col)) options.feeFields.push(i);
+            });
+            break;
+        }
+        return showOptionsDialog(options, resolve, reject);
+    });
 
 const getParsecsvdata = (data) =>
     new Promise((resolve) => {
@@ -129,10 +297,11 @@ const initCsvConverter = (input) => {
             let promise = Promise.resolve();
             for (const file of this.files) {
                 promise = promise
-                    .then(() => setOverlay(file.name))
+                    // .then(() => setOverlay(file.name))
                     .then(() => readFile(file))
                     .then((data) => getParsecsvdata(data))
-                    .then((table) => reformatTable(table))
+                    .then((table) => getOptions(table, file.name))
+                    .then(reformatTable)
                     .then((outTable) => downloadTable(outTable, file.name))
                     .then(() => info(file.name + " erfolgreich konvertiert."))
                     .catch((err) => error(err));

@@ -79,34 +79,85 @@
                 background-color: rgba(0, 255, 0, 50%);
             }
             #copyright {
-                font-size: .8em;
+                font-size: 0.8em;
                 color: rgba(0, 0, 0, 80%);
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 text-align: right;
-                margin: .5em;
+                margin: 0.5em;
             }
             #copyright a {
-              color: rgba(30, 30, 30, 80%);
+                color: rgba(30, 30, 30, 80%);
+            }
+            .options-input {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+            .inner-options-input {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 1em;
+                background-color: white;
+                border: black 0.2em solid;
+            }
+            .options-input h1 {
+                font-size: 1em;
+                font-weight: bold;
+                text-align: center;
+                background: gray;
+                padding: 1em;
+                margin: -1em -1em 1em -1em;
+                color: white;
+            }
+            .options-input table {
+                border: none;
+            }
+            .options-input td.description {
+                text-align: right;
+                vertical-align: top;
+            }
+            .options-input td.field {
+                text-align: left;
+                vertical-align: top;
+            }
+            .options-input button {
+                margin: 0.5rem 0.2rem;
+            }
+            input.spin::-webkit-inner-spin-button,
+            input.spin::-webkit-outer-spin-button {
+                opacity: 1;
+            }
+            .right {
+                text-align: right;
             }
         </style>
     </head>
     <body>
         <div id="content">
             <div class="logo">
-              <a href="https://steuerberater-nedtwig.de/" target="_blank"><img src="logo2.jpg" /></a>
-              powered by
-              <a href="https://runlevel3.de/" target="_blank" class="rl3-logo"><img src="logo.svg" /></a>
+                <a href="https://steuerberater-nedtwig.de/" target="_blank"
+                    ><img src="logo2.jpg"
+                /></a>
+                powered by
+                <a href="https://runlevel3.de/" target="_blank" class="rl3-logo"
+                    ><img src="logo.svg"
+                /></a>
             </div>
             <div class="description" lang="de">
                 <h1>ebay Transaction Report Konverter</h1>
                 <p>
-                    Hier können Sie die von ebay heruntergeladenen <q>Transaction
-                    Reports</q> im CSV-Format so umwandeln lassen, dass für alle
-                    Umsätze eine weitere Zeile mit den Gebühren eingefügt
-                    wird.
+                    Hier können Sie die von ebay heruntergeladenen
+                    <q>Transaction Reports</q> im CSV-Format so umwandeln
+                    lassen, dass für alle Umsätze eine weitere Zeile mit den
+                    Gebühren eingefügt wird.
                 </p>
                 <p>
                     Alle Spalten in deren Titel <q>Gebühr</q> oder
@@ -134,12 +185,17 @@
                 </p>
             </div>
         </div>
-  </div>
-  <div id="copyright">
-    &copy; 2022 <a href="https://runlevel3.de/" target="_blank">runlevel3</a>
-    Code on <a href="https://github.com/rl3/ebay-transaction-converter" target="_blank">GitHub</a>
-  </div>
-  <div id="messages"></div>
+        <div id="copyright">
+            &copy; 2022
+            <a href="https://runlevel3.de/" target="_blank">runlevel3</a> Code
+            on
+            <a
+                href="https://github.com/rl3/ebay-transaction-converter"
+                target="_blank"
+                >GitHub</a
+            >
+        </div>
+        <div id="messages"></div>
         <div id="overlay">
             <div class="filename"></div>
             <div class="loading"><img src="loading.svg" /></div>
