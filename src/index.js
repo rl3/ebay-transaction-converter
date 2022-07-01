@@ -3,6 +3,9 @@
 const reTypeField = /Typ/;
 const reBruttoField = /Transaktionsbetrag/;
 const reFeeField = /Gebühr|Verkaufsprovision/;
+const reClearField = /Bestellnummer/;
+
+const enableOptionsSelect = true;
 
 const defaultFeeTypeName = "Andere Gebühr";
 
@@ -60,6 +63,7 @@ const reformatTable = (options) => {
             newRow[options.typeField] = options.feeTypeName;
             newRow[options.bruttoField] = String(feeSum).replace(/\./, ",");
             options.feeFields.forEach((index) => (newRow[index] = "--"));
+            options.clearFields.forEach((index) => (newRow[index] = ""));
             outTable.push(newRow);
         }
     }
@@ -77,6 +81,7 @@ const showOptionsDialog = (defaultOptions, resolve, reject) => {
             inputTypeField.innerHTML =
                 "";
         const feeFields = new Set(options.feeFields);
+        const clearFields = new Set(options.clearFields);
         availableFields.forEach((name, i) => {
             {
                 const option = document.createElement("option");
@@ -84,6 +89,13 @@ const showOptionsDialog = (defaultOptions, resolve, reject) => {
                 option.value = i;
                 if (feeFields.has(i)) option.selected = true;
                 inputFeeFields.appendChild(option);
+            }
+            {
+                const option = document.createElement("option");
+                option.innerText = name;
+                option.value = i;
+                if (clearFields.has(i)) option.selected = true;
+                inputClearFields.appendChild(option);
             }
             {
                 const option = document.createElement("option");
@@ -158,6 +170,16 @@ const showOptionsDialog = (defaultOptions, resolve, reject) => {
     });
     addRow("Gebührenfelder:", inputFeeFields);
 
+    // fee fields
+    const inputClearFields = document.createElement("select");
+    inputClearFields.multiple = true;
+    inputClearFields.addEventListener("change", () => {
+        options.clearFields = Array.from(inputClearFields.selectedOptions).map(
+            (option) => option.value
+        );
+    });
+    addRow("zu löschende Felder:", inputClearFields);
+
     // brutto field
     const inputBruttoField = document.createElement("select");
     inputBruttoField.addEventListener("change", () => {
@@ -230,7 +252,9 @@ const getOptions = (table, fileName) =>
             skipRows: 0,
             typeField: undefined,
             bruttoField: undefined,
+            clearFields: [],
             feeFields: [],
+            clearFields: [],
             feeTypeName: defaultFeeTypeName,
         };
         for (const row of table) {
@@ -244,11 +268,14 @@ const getOptions = (table, fileName) =>
             row.forEach((col, i) => {
                 if (reTypeField.test(col)) options.typeField = i;
                 if (reBruttoField.test(col)) options.bruttoField = i;
+                if (reClearField.test(col)) options.clearFields.push(i);
                 if (reFeeField.test(col)) options.feeFields.push(i);
             });
             break;
         }
-        return showOptionsDialog(options, resolve, reject);
+        return enableOptionsSelect
+            ? showOptionsDialog(options, resolve, reject)
+            : resolve(options);
     });
 
 const getParsecsvdata = (data) =>
@@ -297,7 +324,9 @@ const initCsvConverter = (input) => {
             let promise = Promise.resolve();
             for (const file of this.files) {
                 promise = promise
-                    // .then(() => setOverlay(file.name))
+                    .then(() =>
+                        enableOptionsSelect ? undefined : setOverlay(file.name)
+                    )
                     .then(() => readFile(file))
                     .then((data) => getParsecsvdata(data))
                     .then((table) => getOptions(table, file.name))
